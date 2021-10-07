@@ -8,16 +8,19 @@ class SoundData:
     path_key: ClassVar = 'path'
     volume_key: ClassVar = 'volume'
     looping_key: ClassVar = 'loop'
+    catalog_key: ClassVar = 'catalog'
 
     path: str
     volume: str
     looping: str
+    catalog: str = None
 
     def to_dict(self):
         return {
             self.path_key: self.path,
             self.volume_key: self.volume,
-            self.looping_key: self.looping
+            self.looping_key: self.looping,
+            self.catalog_key: self.catalog
         }
 
     @staticmethod
@@ -25,7 +28,8 @@ class SoundData:
         path = value[SoundData.path_key]
         volume = value[SoundData.volume_key]
         looping = value[SoundData.looping_key]
-        return SoundData(path, volume, looping)
+        catalog = value[SoundData.catalog_key]
+        return SoundData(path, volume, looping, catalog)
 
 class Sound(object):
    
@@ -33,11 +37,13 @@ class Sound(object):
         self.id = id
         self.mixer = mixer
         self.sound_data = sound_data
-        self.sound = pygame.mixer.Sound(sound_data.path)
+        self.sound = None
         self.current_channel = None
         self.is_paused = False
 
     def play(self):
+        if not self.sound:
+            self.sound = pygame.mixer.Sound(self.sound_data.path)
         if not self.__is_assigned():
             self.current_channel = self.mixer.find_channel()
             self.current_channel.set_volume(self.sound_data.volume / 100)
@@ -64,7 +70,6 @@ class Sound(object):
         if self.__is_assigned():
             self.current_channel.stop()
             self.current_channel = None
-            self.is_paused = False
 
     def set_volume(self, new_volume):
         self.sound_data.volume = new_volume
