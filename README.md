@@ -9,4 +9,5 @@ CLI soundboard with pygame backend.
 - [x] json serialization
 - [ ] file categorization
 - [ ] code refactoring
+- [ ] PEP 8
 - [ ] tests 

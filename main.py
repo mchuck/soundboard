@@ -3,9 +3,11 @@ from sound import Sound, SoundData
 import pygame
 import time
 import json
+import sys
 from tabulate import tabulate
 from os.path import basename
 from colorama import init, Fore, Style
+
 
 from commands import PlayCommand, PauseCommand, StopCommand, ExitCommand, VolumeCommand, get_parser
 
@@ -91,5 +93,5 @@ def dump_file(songs, filename):
         json.dump(data, out_f)
 
 if __name__ == "__main__":
-    init()
-    run('songs.json')
+    init() # initialize colorama
+    run(sys.argv[1])
