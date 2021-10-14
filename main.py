@@ -1,11 +1,11 @@
 
 from sound import Sound, SoundData
-import pygame
 import time
 import json
 import sys
 from tabulate import tabulate
 import os
+import pygame
 from colorama import init, Fore, Style
 
 
@@ -30,26 +30,26 @@ def run(songs):
         try:
             command_result = command_parser.parse(input())
 
-            #TODO pattern match this in python 3.10
-            if isinstance(command_result, PlayCommand):
-                sound = find_sound(sounds, command_result.song_id.value)
-                sound.play()
-            elif isinstance(command_result, PauseCommand):
-                sound = find_sound(sounds, command_result.song_id.value)
-                sound.pause()
-            elif isinstance(command_result, StopCommand):
-                sound = find_sound(sounds, command_result.song_id.value)
-                sound.stop()
-            elif isinstance(command_result, VolumeCommand):
-                sound = find_sound(sounds, command_result.song_id.value)
-                sound.set_volume(command_result.value.value)
-            elif isinstance(command_result, SaveCommand):
-                print('Please type the file name:', end = ' ')
-                dump_file(sounds, input())
-            elif isinstance(command_result, ExitCommand):
-                break
-            else:
-                print('Unimplemented but recognized command', command_result)
+            match command_result:
+                case PlayCommand(song_id):
+                    sound = find_sound(sounds, song_id.value)
+                    sound.play()
+                case PauseCommand(song_id):
+                    sound = find_sound(sounds, song_id.value)
+                    sound.pause()
+                case StopCommand(song_id):
+                    sound = find_sound(sounds, song_id.value)
+                    sound.stop()
+                case VolumeCommand(song_id, value):
+                    sound = find_sound(sounds, song_id.value)
+                    sound.set_volume(value.value)
+                case SaveCommand():
+                    print('Please type the file name:', end = ' ')
+                    dump_file(sounds, input())
+                case ExitCommand():
+                    break
+                case _:
+                    print('Unimplemented but recognized command', command_result)
 
         except Exception as ex:
             print(str(ex))
